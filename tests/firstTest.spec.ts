@@ -94,7 +94,7 @@ test.skip('Reusing locators', async ({page}) => {
   await expect(emailField).toHaveValue('test@test.com');
 });
 
-test('extracting values', async ({page}) => {
+test.skip('extracting values', async ({page}) => {
   //single test value
   const basicForm = page.locator('nb-card').filter({hasText: "Basic form"});
   const buttonText = await basicForm.locator('button').textContent();
@@ -113,4 +113,24 @@ test('extracting values', async ({page}) => {
   // get attribute value
   const emailPlaceholder = await emailField.getAttribute('placeholder');
   expect(emailPlaceholder).toEqual('Email');
+});
+
+test('assertions', async ({page}) => {
+  const basicFormButton = page.locator('nb-card').filter({hasText: "Basic form"}).locator('button');
+ 
+  // General assertions
+  const text = await basicFormButton.textContent();
+  expect(text).toEqual('Submit');
+
+  //locator assertions
+  expect(basicFormButton).toBeVisible();
+  expect(basicFormButton).toBeEnabled();
+  expect(basicFormButton).toHaveText('Submit');
+  expect(basicFormButton).toHaveAttribute('type', 'submit');
+  expect(basicFormButton).toHaveClass('appearance-filled size-medium shape-rectangle status-danger nb-transition');
+
+  // Soft assertions allow the test to continue even if the assertion fails
+  // soft assertion is not a good practice, but it can be useful in some cases
+  await expect.soft(basicFormButton).toHaveText('Submit'); //assertion should fail with Submit5 but the test should continue
+  await basicFormButton.click();
 });
